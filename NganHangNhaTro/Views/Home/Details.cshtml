@@ -1,0 +1,231 @@
+﻿@model NganHangNhaTro.Models.ViewModels.VM_RealEstateDetail;
+
+@{
+    ViewData["Title"] = "Thông tin chi tiết";
+
+    var realEstateType = Model.RealEstateTypeId switch
+    {
+        2 => "PHÒNG TRỌ",
+        3 => "CĂN HỘ",
+        4 => "NHÀ NGUYÊN CĂN",
+        5 => "Ở GHÉP",
+        _ => "PHÒNG TRỌ"
+    };
+
+    var statusCss = Model.Status.Equals("Còn phòng") ? "text-success" : "text-disable";
+    var statusIcon = Model.Status.Equals("Còn phòng") ? "fa fa-check" : "fa fa-times";
+
+    var isExpired = Convert.ToDateTime(Model.ExprireTime) >= DateTime.Now ? "d-none" : "d-block";
+}
+
+<!-- breadcrumb area start -->
+<div class="breadcrumb-area jarallax" style="background-image:url(/assets/img/bg/4.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-inner">
+                    <h1 class="page-title">Thông tin chi tiết</h1>
+                    <ul class="page-list">
+                        <li><a href="#">Trang chủ</a></li>
+                        <li>Thông tin chi tiết</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb area End -->
+<!-- property-details-area start -->
+<div class="property-details-area">
+    <div class="container">
+        <div class="row pd-top-40">
+            <div class="col-lg-9">
+                <div class="property-info mb-5">
+                    <div class="h4 text-danger">
+                        @Model.Title
+                    </div>
+                    <div class="h6 font-italic">@realEstateType</div>
+                </div>
+                <div class="property-news-single-card border-bottom-yellow mb-4 pb-2">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Tình trạng</div>
+                                <p class="@statusCss font-weight-bold"><i class="@statusIcon"></i>@Model.Status</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Số phòng</div>
+                                <p><i class="fa fa-home"></i>@Model.RoomNumber phòng</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Giá phòng</div>
+                                <p class="text-danger">
+                                    <i class="fa fa-usd"></i>
+                                    @Helper.VNCurrencyFormat(Model.Price.ToString())/tháng
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Diện tích</div>
+                                <p class="text-danger">
+                                    <img src="~/assets/img/icons/7.png" alt="img">
+                                    @Model.Acreage m<sub style="vertical-align:super">2</sub>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Ngày bắt đầu</div>
+                                <p><i class="fa fa-calendar"></i>@Model.BeginTime</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Ngày hết hạn</div>
+                                <p><i class="fa fa-calendar-times-o"></i>@Model.ExprireTime</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">SĐT liên hệ</div>
+                                <p><i class="fa fa-phone"></i>@Model.ContactNumber</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="single-property-info">
+                                <div class="h5">Người đăng</div>
+                                <p><i class="fa fa-user"></i>@Model.AgentName</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="single-property-info">
+                                <div class="h5">Địa chỉ</div>
+                                <p>
+                                    <img src="~/assets/img/icons/1.png" alt="img">
+                                    @Model.Address
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="@isExpired" id="da-het-han"></div>
+
+                <div class="property-news-single-card border-bottom-yellow">
+                    <div class="content-title h4">Mô tả chi tiết</div>
+                    <div class="mb-3">
+                        @Html.Raw(Model.Description)
+                    </div>
+
+                </div>
+                <div class="property-news-single-card border-bottom-yellow pb-4">
+                    <div class="content-title mb-3 h4">Tiện ích có sẵn</div>
+                    <div class="row">
+                        @if (Model.SecurityCamera)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+                                    <li><i class="fa fa-check"></i> Camera an ninh</li>
+                                </ul>
+                            </div>
+                        }
+                        @if (Model.HasPrivateWc)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+
+                                    <li><i class="fa fa-check"></i> Vệ sinh riêng</li>
+
+                                </ul>
+                            </div>
+                        }
+
+                        @if (Model.HasMezzanine)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+
+                                    <li><i class="fa fa-check"></i> Có gác lửng</li>
+
+                                </ul>
+                            </div>
+                        }
+
+                        @if (Model.AllowCook)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+
+                                    <li><i class="fa fa-check"></i> Cho phép nấu ăn</li>
+
+                                </ul>
+                            </div>
+                        }
+
+                        @if (Model.FreeTime)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+
+                                    <li><i class="fa fa-check"></i> Giờ giấc tự do</li>
+
+                                </ul>
+                            </div>
+                        }
+                        @if (Model.WifiPrice == 0)
+                        {
+                            <div class="col-sm-4">
+                                <ul class="rld-list-style mb-3">
+                                    <li><i class="fa fa-check"></i> Free wifi</li>
+                                </ul>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="property-news-single-card style-two border-bottom-yellow">
+                    <div class="content-title mb-3 h4">Hình ảnh</div>
+                </div>
+
+            </div>
+            <div class="col-lg-3">
+                <div class="widget mt-3 pl-3">
+                    <div class="text-danger h6 pt-3">Xem theo loại phòng</div>
+                    <ul class="ml-2">
+                        <li><a asp-action="Index" asp-route-type="2">Phòng trọ, nhà trọ</a> </li>
+                        <li><a asp-action="Index" asp-route-type="4">Thuê nhà nguyên căn</a> </li>
+                        <li><a asp-action="Index" asp-route-type="3">Căn hộ chung cư</a> </li>
+                        <li><a asp-action="Index" asp-route-type="5">Ở ghép</a> </li>
+
+                    </ul>
+                </div>             
+            </div>
+        </div>
+    </div>
+</div>
+<!-- property details area end -->
+<!-- Recommended area start -->
+@*<div class="recommended-area pd-top-90 pd-bottom-70">
+    <div class="container">
+        <div class="section-title">
+            <h3 class="title">Bài đăng liên quan</h3>
+            <a class="btn-view-all" asp-action="Index">Xem tất cả</a>
+        </div>
+        @await Html.PartialAsync("_recommendList", Model.RecommmendList)
+    </div>
+</div>*@
+<!-- Recommended area end -->
+

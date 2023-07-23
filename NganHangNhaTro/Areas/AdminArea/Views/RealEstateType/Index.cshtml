@@ -1,0 +1,7 @@
+﻿@model IEnumerable<NganHangNhaTro.Models.DataModels.RealEstateType>;
+
+@{ ViewData["Title"] = "Index";}
+
+<div id="view-all">
+    @await Html.PartialAsync("_ViewAllTypes", Model)
+</div>

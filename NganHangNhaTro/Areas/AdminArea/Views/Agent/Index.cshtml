@@ -1,0 +1,9 @@
+﻿@model IEnumerable<NganHangNhaTro.Models.DataModels.Agent>;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="view-all-agents">
+    @await Html.PartialAsync("_ViewAllAgents", Model)
+</div>
