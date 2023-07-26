@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NganHangNhaTro.Models.DataModels;
+using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 
 namespace NganHangNhaTro.Data
@@ -31,6 +33,10 @@ namespace NganHangNhaTro.Data
 
         }
 
+        internal IEnumerable<object> Set<T>(RealEstate realEstate)
+        {
+            throw new NotImplementedException();
+        }
     }
     
 }

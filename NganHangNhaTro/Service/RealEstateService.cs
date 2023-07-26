@@ -31,8 +31,8 @@ namespace NganHangNhaTro.Service
         List<Result> GetRecommendList(int? id);
         IEnumerable<VM_RealEstateIsActive> GetRealEstateIsActiveList();
         List<RealEstateViewModel> GetCustomerConFirmList();
-        List<RealEstate> SearchByTitle(string title);
-        IQueryable<Result> Filter(Condition condition); 
+        List<VM_RealEstateIsActive> SearchByTitle(string title);
+        bool ConfirmRealEsate(int id, int confirmType);
     }
     public class RealEstateService : IRealEstateService 
     {
@@ -59,7 +59,9 @@ namespace NganHangNhaTro.Service
                     Address = item.Address,
                     ExprireTime = item.ExprireTime,
                     RealEstateTypeId = item.RealEstateType.Id,
-                    Price = item.Price,
+                    Price = Helper.VNCurrencyFormat(item.Price.ToString()),
+                    AgentId = item.Agent.Id,
+                    ViewCount = item.ViewCount,
                     AgentName = item.Agent.AgentName, 
                     IsActive = item.IsActive,
                 };
@@ -73,6 +75,7 @@ namespace NganHangNhaTro.Service
             var details = _context.RealEstate
                 .Include(x => x.Agent)
                 .Include(x => x.RealEstateType)
+                .Where(x => x.ConfirmStatus == 1) // Thêm điều kiện ConfirmStatus == 1
                 .ToList();
 
             foreach (var item in details)
@@ -89,8 +92,9 @@ namespace NganHangNhaTro.Service
                     AgentName = item.Agent.AgentName,
                     ContactNumber = item.ContactNumber,
                     ImageUrl = item.imageUrl,
-                    ViewCount = item.ViewCount,
-                    IsActive = item.IsActive = true
+                    ViewCount = item.ViewCount == null ? 0 : item.ViewCount,
+                    ConfirmStatus = item.ConfirmStatus,
+                    IsActive = item.IsActive
                 };
 
                 list.Add(vm_rt);
@@ -132,7 +136,7 @@ namespace NganHangNhaTro.Service
                 IsActive = false,
                 IsConfirm = agentId == 1,
                 IsAvaiable = true,
-                ConfirmStatus = agentId == 1 ? 1 : 0,
+                ConfirmStatus = agentId == 1 ? 1 : 0, 
                 Title = detail.Title,
                 Price = detail.Price,
                 Address = detail.Address,
@@ -242,7 +246,7 @@ namespace NganHangNhaTro.Service
         public bool UpdateRealEstate (VM_RealEstateDetail detail , IFormFile? file)
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
-
+            
             string imageUrl = UploadImage(file, wwwRootPath);
 
             var rt = _context.RealEstate.Find(detail.Id); 
@@ -256,6 +260,7 @@ namespace NganHangNhaTro.Service
                 rt.Description = detail.Description;
                 rt.Price = detail.Price;
                 rt.Acreage = detail.Acreage;
+                rt.Address = detail.Address;
                 rt.RoomNumber = detail.RoomNumber;
                 rt.HasMezzanine = detail.HasMezzanine;
                 rt.FreeTime = detail.FreeTime;
@@ -264,7 +269,10 @@ namespace NganHangNhaTro.Service
                 rt.WaterPrice = Convert.ToInt32(detail.WaterPrice);
                 rt.ElectronicPrice = Convert.ToInt32(detail.ElectronicPrice);  
                 rt.WifiPrice = Convert.ToInt32(detail.WifiPrice);
-                rt.imageUrl = imageUrl;
+                if (file != null)
+                {
+                    rt.imageUrl = UploadImage(file, wwwRootPath);
+                }
                 _context.SaveChanges();
                 return true; 
 
@@ -277,7 +285,6 @@ namespace NganHangNhaTro.Service
 
         public int DeleteRealEstate (int id, int userId)
         {
-            
             try
             {
                 var realEstate = _context.RealEstate.Find(id);
@@ -335,9 +342,8 @@ namespace NganHangNhaTro.Service
                 .Include(r => r.Agent)
                 .SingleOrDefaultAsync();
             if(info != null)
-            {
-                // Tăng giá trị ViewCount lên 1
-                info.ViewCount = info.ViewCount ?? 0; // Thiết lập giá trị mặc định là 0 nếu ViewCount là null
+            {                
+                info.ViewCount = info.ViewCount ?? 0; 
                 info.ViewCount++;
                 await _context.SaveChangesAsync();
 
@@ -405,76 +411,28 @@ namespace NganHangNhaTro.Service
             return results;
         }
 
-        public List<RealEstate> SearchByTitle(string title)
+        public List<VM_RealEstateIsActive> SearchByTitle(string title)
         {
-            using (var dbContext = new MyDbContext()) // Create an instance of MyDbContext
-            {
-                var results = dbContext.Set<RealEstate>().Where(x => EF.Functions.Like(x.Title, $"%{title}%")).ToList();
-                return results;
-            }
-        }
-        public IQueryable<Result> Filter(Condition condition)
-        {
-            try
-            {
-                var source = _context.RealEstate.Where(r => r.IsActive)
-                                .Include(r => r.Agent)
-                                .Include(r => r.RealEstateType)
-                                .OrderByDescending(r => r.IsAvaiable)
-                                .ThenByDescending(r => r.PostTime)
-                                .ThenByDescending(r => r.ExprireTime)
-                                .AsQueryable();
-
-                if (source != null && condition != null)
-                {
-                    
-                    var priceRange = Helper.GetPriceRange(condition.PriceRange);
-                    var minPrice = priceRange[0];
-                    var maxPrice = priceRange[1];
-                    source = source.Where(x =>
-                        x.Price >= minPrice && x.Price <= maxPrice);
-
-                    var acreageRange = Helper.GetAcreageRange(condition.AcreageRange);
-                    var minAcreage = acreageRange[0];
-                    var maxAcreage = acreageRange[1];
-                    source = source.Where(x =>
-                       x.Acreage >= minAcreage && x.Acreage <= maxAcreage);
-
-                    if (!string.IsNullOrEmpty(condition.SearchString.Trim()))
-                    {
-                        if (DateTime.TryParse(condition.SearchString, out DateTime searchDate))
-                        {
-                            source = source.Where(x => x.PostTime < searchDate && x.ExprireTime > searchDate);
-                        }
-                        else
-                        {
-                            source = source.Where(x => x.Address.Contains(condition.SearchString)
-                                                     || x.Price.ToString().Contains(condition.SearchString));
-                        }
-                    }
-                }
-
-                IQueryable<Result> results = (from item in source
-                                              select new Result
-                                              {
-                                                  Id = item.Id,
-                                                  Address = Helper.GetStreet(item.Address),
-                                                  Price = item.Price,
-                                                  Acreage = item.Acreage,
-                                                  Type = item.RealEstateType.RealEstateTypeName,
-                                                  PostTime = item.PostTime.ToString("dd/MM/yyyy"),
-                                                  ImageUrl = item.imageUrl,
-                                                  AgentName = item.Agent.AgentName,
-                                                  ContactNumber = item.ContactNumber
-                                              });
-
-                return results;
-
-            }
-            catch
-            {
-                return null;
-            }
+            var results = _context.RealEstate
+                   .Where(x => EF.Functions.Like(x.Title, $"%{title}%"))
+                   .Select(x => new VM_RealEstateIsActive
+                   {
+                       Id = x.Id,
+                       Title = x.Title,
+                       AgentName = x.Agent.AgentName,
+                       Address = x.Address,
+                       Price = x.Price,
+                       PostTime = x.PostTime,
+                       Acreage = x.Acreage,
+                       RealEstateTypeName = x.RealEstateType.RealEstateTypeName,
+                       ContactNumber = x.ContactNumber,
+                       ViewCount = x.ViewCount,
+                       IsActive = x.IsActive,
+                       ConfirmStatus = x.ConfirmStatus,
+                       ImageUrl = x.imageUrl
+                   })
+                   .ToList();
+            return results;
         }
         public List<Result> GetRecommendList(int? id)
         {
@@ -502,7 +460,7 @@ namespace NganHangNhaTro.Service
                                   Address = Helper.GetStreet(item.Address),
                                   Price = item.Price,
                                   Acreage = item.Acreage,
-                                  Type = item.RealEstateType.RealEstateTypeName,
+                                  RealEstateTypeName = item.RealEstateType.RealEstateTypeName,
                                   PostTime = item.PostTime.ToString("dd/MM/yyyy"),
                                   ImageUrl = item.imageUrl,
                                   AgentName = item.Agent.AgentName,
@@ -510,6 +468,28 @@ namespace NganHangNhaTro.Service
                               }).ToList();
                 return result;
             }
+        }
+
+        public bool ConfirmRealEsate(int id, int confirmType)
+        {
+            try
+            {
+                if (id <= 0 || confirmType <= 0) return false;
+
+                var post = _context.RealEstate.Find(id);
+                if (post == null) return false;
+
+                post.IsConfirm = true;
+                post.ConfirmStatus = confirmType;
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
     }
 }

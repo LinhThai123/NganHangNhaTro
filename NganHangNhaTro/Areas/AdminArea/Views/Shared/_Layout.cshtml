@@ -93,9 +93,9 @@
                                 <li class="@Html.IsActiveLink("RealEstate","ClientRealEstateList")">
                                     <a asp-area="AdminArea" asp-controller="RealEstate" asp-action="ClientRealEstateList">Bài viết cá nhân</a>
                                 </li>
-                                <li class="@Html.IsActiveLink("RealEstate","CustomerConfirmList")">
+                               @*<li class="@Html.IsActiveLink("RealEstate","CustomerConfirmList")">
                                     <a asp-area="AdminArea" asp-controller="RealEstate" asp-action="CustomerConfirmList">Chờ xác nhận</a>
-                                </li>
+                                </li>*@
                                 <li class="@Html.IsActiveLink("RealEstate","CustomerExpireList")">
                                     <a asp-area="AdminArea" asp-controller="RealEstate" asp-action="CustomerExpireList">Bài viết quá hạn</a>
                                 </li>
@@ -120,14 +120,14 @@
                                 <i class="fas fa-user-secret"></i> <span class="nav-label">Quản lý phân quyền</span>
                             </a>
                         </li>
-                        <li class="@Html.IsActiveLink("Policy", "Index")">
+                        @*<li class="@Html.IsActiveLink("Policy", "Index")">
                             <a asp-area="AdminArea" asp-controller="Policy" asp-action="Index">
                                 <i class="fas fa-bahai"></i> <span class="nav-label">Chính sách</span>
                             </a>
-                        </li>
-                        <li class="@Html.IsActiveLink("AboutUs", "Index")">
+                        </li>*@
+                      @*  <li class="@Html.IsActiveLink("AboutUs", "Index")">
                             <a asp-area="AdminArea" asp-controller="AboutUs" asp-action="Index"><i class="fas fa-info-circle"></i> <span class="nav-label">Thông tin thêm</span></a>
-                        </li>
+                        </li>*@
                         <li class="@Html.IsActiveLink("Account", "Logout")">
                             <a asp-area="AdminArea" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> <span class="nav-label">Đăng xuất</span> </a>
                         </li>

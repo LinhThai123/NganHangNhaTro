@@ -483,4 +483,6 @@ D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\NganHangNhaTro.genrunt
 D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\ref\NganHangNhaTro.dll
 D:\BackEnd\NganHangNhaTro\NganHangNhaTro\bin\Debug\net5.0\PagedList.dll
 D:\BackEnd\NganHangNhaTro\NganHangNhaTro\bin\Debug\net5.0\PagedList.Mvc.dll
-D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\Razor\Views\Home\Details.cshtml.g.cs
+D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\Razor\Views\ClientRealEstate\Index.cshtml.g.cs
+D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\Razor\Views\ClientRealEstate\Details.cshtml.g.cs
+D:\BackEnd\NganHangNhaTro\NganHangNhaTro\obj\Debug\net5.0\Razor\Views\ClientRealEstate\_recommendList.cshtml.g.cs

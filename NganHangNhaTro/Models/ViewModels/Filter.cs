@@ -8,10 +8,8 @@ namespace NganHangNhaTro.Models.ViewModels
 
         public List<Result> Results { get; set; }
     }
-
     public class Condition
     {
-
         public string SearchString { get; set; }
 
         public int PriceRange { get; set; }
@@ -25,11 +23,22 @@ namespace NganHangNhaTro.Models.ViewModels
         public string Address { get; set; }
         public decimal Price { get; set; }
         public int Acreage { get; set; }
-        public string Type { get; set; }
+        public string RealEstateTypeName { get; set; }
         public string PostTime { get; set; }
         public string ImageUrl { get; set; }
         public string AgentName { get; set; }
-
+        public string ContactNumber { get; set; }
+    }
+    public class KetQua
+    {
+        public int Id { get; set; }
+        public string Address { get; set; }
+        public decimal Price { get; set; }
+        public int Acreage { get; set; }
+        public int? Type { get; set; }
+        public string PostTime { get; set; }
+        public string ImageUrl { get; set; }
+        public string AgentName { get; set; }
         public string ContactNumber { get; set; }
     }
 }

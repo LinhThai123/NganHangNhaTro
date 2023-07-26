@@ -35,17 +35,14 @@ namespace NganHangNhaTro.Models.DataModels
         public decimal? WifiPrice { get; set; }
         public int? ViewCount { get; set; }
         public string? imageUrl { get; set; }
-
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         [ValidateNever]
         public Agent Agent { get; set; }
-
         public int RealEstateTypeId { get; set; }
         [ForeignKey("RealEstateTypeId")]
         [ValidateNever]
         public RealEstateType RealEstateType { get; set; }
 
-        
     }
 }

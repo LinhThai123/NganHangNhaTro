@@ -48,7 +48,7 @@
                 </div>
                 <div class="property-news-single-card border-bottom-yellow mb-4 pb-2">
                     <div class="row">
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-3 col-sm-6" style="display: none ; ">
                             <div class="single-property-info">
                                 <div class="h5">Tình trạng</div>
                                 <p class="@statusCss font-weight-bold"><i class="@statusIcon"></i>@Model.Status</p>
@@ -198,6 +198,10 @@
 
                 <div class="property-news-single-card style-two border-bottom-yellow">
                     <div class="content-title mb-3 h4">Hình ảnh</div>
+                    @if (Model.imageUrl != null)
+                    {
+                        <img src="@Model.imageUrl" alt="" />
+                    }
                 </div>
 
             </div>
@@ -211,14 +215,14 @@
                         <li><a asp-action="Index" asp-route-type="5">Ở ghép</a> </li>
 
                     </ul>
-                </div>             
+                </div>
             </div>
         </div>
     </div>
 </div>
 <!-- property details area end -->
 <!-- Recommended area start -->
-@*<div class="recommended-area pd-top-90 pd-bottom-70">
+<div class="recommended-area pd-top-90 pd-bottom-70">
     <div class="container">
         <div class="section-title">
             <h3 class="title">Bài đăng liên quan</h3>
@@ -226,6 +230,5 @@
         </div>
         @await Html.PartialAsync("_recommendList", Model.RecommmendList)
     </div>
-</div>*@
+</div>
 <!-- Recommended area end -->
-

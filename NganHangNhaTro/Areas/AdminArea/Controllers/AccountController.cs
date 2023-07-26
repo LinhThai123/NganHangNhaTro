@@ -61,7 +61,7 @@ namespace NganHangNhaTro.Areas.AdminArea.Controllers
                             {
                                 return RedirectToAction("ClientRealEstateList", "RealEstate");
                             }
-                            return RedirectToAction("CustomerConfirmList", "RealEstate");
+                            return RedirectToAction("Index", "RealEstate");
                         }
                     }
                     else

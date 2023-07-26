@@ -91,7 +91,8 @@ namespace NganHangNhaTro
 
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
+
 
             app.UseEndpoints(endpoints =>
             {
@@ -101,7 +102,7 @@ namespace NganHangNhaTro
                     );
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=ClientRealEstate}/{action=Index}/{id?}");
             });
         }
     }

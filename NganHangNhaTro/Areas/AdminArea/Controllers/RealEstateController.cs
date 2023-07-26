@@ -82,14 +82,23 @@ namespace NganHangNhaTro.Areas.AdminArea.Controllers
             }
         }
 
+        //[HttpGet]
+        //[Authorize(Roles = "Admin,Manager")]
+        //[Route("danh-sach-qua-han")]
+        //public IActionResult CustomerExpireList()
+        //{
+        //    var exprireList = _services.CustomerExpireList();
+        //    return View(exprireList);
+        //}
+
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
-        [Route("danh-sach-qua-han")]
-        public IActionResult CustomerExpireList() 
-        { 
-            var exprireList = _services.CustomerExpireList();
-            return View(exprireList);
+        //[Route("danh-sach-qua-han")]
+        public IActionResult CustomerExpireList () 
+        {
+            return View();
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
         [Route("danh-sach-cho")]
@@ -100,9 +109,7 @@ namespace NganHangNhaTro.Areas.AdminArea.Controllers
         }
         
 
-
         [HttpGet]
-       
         [Route("danh-sach-bai-viet")]
         public IActionResult ClientRealEstateList()
         {
@@ -207,6 +214,39 @@ namespace NganHangNhaTro.Areas.AdminArea.Controllers
                 return Json(new { isSuccess = true, isAdmin = true, html = Helper.RenderRazorViewToString(this, "_viewExpireList", _services.CustomerExpireList()) });
             }
 
+        }
+
+
+        [HttpPost, ActionName("Confirm")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmRealEstateConfirm(int id, int confirmType, bool isRedirect)
+        {
+            var isSuccess = _services.ConfirmRealEsate(id, confirmType);
+
+            if (isRedirect)
+            {
+                return Json(new { isSuccess });
+            }
+            else
+            {
+                return Json(new { isSuccess, html = Helper.RenderRazorViewToString(this, "_viewConfirmList", _services.GetCustomerConFirmList()) });
+            }
+        }
+
+        [HttpPost, ActionName("Disable")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DisableRealEsate(int id, int userId, bool isRedirect)
+        {
+            var isSuccess = _services.DisableRealEstate(id);
+
+            if (isRedirect)
+            {
+                return Json(new { isSuccess });
+            }
+            else
+            {
+                return Json(new { isSuccess, html = Helper.RenderRazorViewToString(this, "_viewUserAllPosts", _services.GetUserAllPosts(userId)) });
+            }
         }
     }
 }
